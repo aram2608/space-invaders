@@ -15,7 +15,7 @@ class AlienInvasion:
         pygame.display.set_caption("Space Invaders")
 
         # Set background color, RBG values are used
-        self.bg_color = (63, 0, 70)
+        self.bg_color = (63, 0, 70) # Lower RBG values for darker colors
 
     def run_game(self):
         """Start the main loop for the game."""
