@@ -1,5 +1,5 @@
-from space_invaders.alien_invasion import AlienInvasion
+from space_invaders.space_invaders import SpaceInvaders
 
 if __name__ == "__main__":
-    si = AlienInvasion()
+    si = SpaceInvaders()
     si.run_game()

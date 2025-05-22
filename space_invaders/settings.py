@@ -1,0 +1,1 @@
+"""Settings class for the space invaders game."""
