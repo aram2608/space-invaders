@@ -4,7 +4,7 @@ import pygame
 
 from space_invaders.settings import Settings
 from space_invaders.ship import Ship
-from space_invaders.alien import Alien, BossAlien, Titan
+from space_invaders.alien import Alien, BossAlien, Titan, MushroomBoss
 
 class SpaceInvaders:
     """Overall class to manage game assets and behavior."""
@@ -29,6 +29,7 @@ class SpaceInvaders:
         self.alien = Alien(self)
         self.boss_alien = BossAlien(self)
         self.titan = Titan(self)
+        self.mushroom_boss = MushroomBoss(self)
 
         # Set background color, RBG values are used
         self.bg_color = (63, 0, 70) # Lower RBG values for darker colors
@@ -57,5 +58,6 @@ class SpaceInvaders:
         self.alien.blitme()
         self.boss_alien.blitme()
         self.titan.blitme()
+        self.mushroom_boss.blitme()
     # Make the most recently drawn screen visible
         pygame.display.flip()

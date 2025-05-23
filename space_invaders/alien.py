@@ -57,3 +57,21 @@ class Titan:
     def blitme(self):
         """Draw the titan alien at its current location."""
         self.screen.blit(self.image, self.rect)
+
+class MushroomBoss:
+    """A class to manage the mushroom boss special class."""
+
+    def __init__(self, si_game):
+        """Initialize the mushroom boss."""
+        self.screen = si_game.screen
+        self.screen_rect = si_game.screen.get_rect()
+
+        image_path = '/Users/ja1473/space-invaders/assets/images/mushroom_boss.png'
+        self.image = pygame.image.load(image_path).convert_alpha()
+        self.rect = self.image.get_rect()
+
+        self.rect.midright = self.screen_rect.midright
+
+    def blitme(self):
+        """Draw mushroom boss to screen."""
+        self.screen.blit(self.image, self.rect)
