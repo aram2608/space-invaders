@@ -27,13 +27,12 @@ class EnemyRender(pygame.sprite.Sprite):
         elif position == "center":
             self.rect.center = self.screen_rect.center
         elif position == "random":
-            spawn = randint(1, 3)
-            if spawn == 1:
-                self.rect.topleft = self.screen_rect.topleft
-            elif spawn == 2:
-                self.rect.topright = self.screen_rect.topright
-            else:
-                self.rect.midtop = self.screen_rect.midtop
+            # Spawn anywhere across the top row
+            max_x = self.screen_rect.width - self.rect.width
+            random_x = randint(0, max_x)
+            self.rect.x = random_x
+            self.rect.y = 0  # Top of screen
+
 
     def blitme(self):
         self.screen.blit(self.image, self.rect)
