@@ -4,6 +4,7 @@ import pygame
 
 from space_invaders.settings import Settings
 from space_invaders.ship import Ship
+from space_invaders.bullet import Bullet
 from space_invaders.alien import Alien, BossAlien, Titan, MushroomBoss
 
 class SpaceInvaders:
@@ -22,10 +23,9 @@ class SpaceInvaders:
 
         pygame.display.set_caption("Space Invaders")
 
-        # Initializes a Ship class instance with Space Invaders as the reference
-        # I believe this is known as recursion
+        # Initialize the character/object instances
         self.ship = Ship(self)
-
+        self.bullet = Bullet(self)
         self.alien = Alien(self)
         self.boss_alien = BossAlien(self)
         self.titan = Titan(self)
@@ -38,6 +38,8 @@ class SpaceInvaders:
         """Start the main loop for the game."""
         while True:
             self._check_events()
+            self.ship.update()
+            self.bullet.bullet_movement()
             self._update_screen()
             # A frame rate of 60 fps
             self.clock.tick(60)
@@ -49,6 +51,34 @@ class SpaceInvaders:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    # Move ship to the right
+                    self.ship.moving_right = True
+                elif event.key == pygame.K_LEFT:
+                    # Move ship to the left
+                    self.ship.moving_left = True
+                elif event.key == pygame.K_UP:
+                    # Move ship up
+                    self.ship.moving_up = True
+                elif event.key == pygame.K_DOWN:
+                    # Move ship down
+                    self.ship.moving_down = True
+                elif event.key == pygame.K_SPACE:
+                    self.bullet.movement = True
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    # Move ship to the right
+                    self.ship.moving_right = False
+                elif event.key == pygame.K_LEFT:
+                    # Move ship to the left
+                    self.ship.moving_left = False
+                elif event.key == pygame.K_UP:
+                    # Move ship up
+                    self.ship.moving_up = False
+                elif event.key == pygame.K_DOWN:
+                    # Move ship down
+                    self.ship.moving_down = False
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
@@ -56,6 +86,7 @@ class SpaceInvaders:
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
         self.alien.blitme()
+        self.bullet.blitme()
         self.boss_alien.blitme()
         self.titan.blitme()
         self.mushroom_boss.blitme()

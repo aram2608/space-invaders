@@ -1,20 +1,49 @@
 import pygame
 
+from space_invaders.settings import Settings
+
 class Ship:
     """A class to manage the ship."""
 
     def __init__(self, si_game): # self reference and reference to current instance of SpaceInvaders class
         """Initialize the ship and set its starting position."""
         self.screen = si_game.screen
+        self.settings = si_game.settings
         self.screen_rect = si_game.screen.get_rect()
 
        # Load the ship image and convert for better performance with transparency.
-        image_path = '/Users/ja1473/space-invaders/assets/images/placeholder.png'
+        image_path = '/Users/ja1473/space-invaders/assets/images/ship.png'
         self.image = pygame.image.load(image_path).convert_alpha() # converts transparents background
         self.rect = self.image.get_rect() # pygame treats all objects as rectangles
 
         # Start each new ship at the bottom cetner of the screen.
         self.rect.midbottom = self.screen_rect.midbottom
+
+        # Store a float for the ships exact horizontal position.
+        self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
+
+        # Movement flags
+        self.moving_right = False
+        self.moving_left = False
+        self.moving_up = False
+        self.moving_down = False
+
+    def update(self):
+        """Update position given the movement flags."""
+
+        if self.moving_right:
+            self.x += self.settings.ship_speed
+        elif self.moving_left:
+            self.x -= self.settings.ship_speed
+        elif self.moving_up:
+            self.y -= self.settings.ship_speed
+        elif self.moving_down:
+            self.y += self.settings.ship_speed
+
+        # Update rect object from self.x
+        self.rect.x = self.x
+        self.rect.y = self.y
 
     def blitme(self):
         """Draw the ship at its current location."""
