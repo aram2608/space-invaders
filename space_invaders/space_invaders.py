@@ -49,6 +49,10 @@ class SpaceInvaders:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_mobs()
+            self._check_fleet_edges()
+
+            # Redraw screen
             self._update_screen()
             # A frame rate of 60 fps
             self.clock.tick(60)
@@ -142,7 +146,7 @@ class SpaceInvaders:
         alien = Alien(self)
         alien_width, alien_height = alien.rect.size # Tuple containing width and height
         
-        # we get the base dimensions
+        # We get the base dimensions
         current_x, current_y = alien_width, alien_height
 
         # Spawn logic
@@ -162,6 +166,23 @@ class SpaceInvaders:
         new_alien.rect.x = x_position
         new_alien.rect.y = y_position
         self.aliens.add(new_alien)
+
+    def _update_mobs(self):
+        """Update mob alien position"""
+        self.aliens.update()
+
+    def _check_fleet_edges(self):
+        """Respond appropriately if any aliens have reached an edge."""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self):
+        """Drop the entire fleet and change the fleet's directions."""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
 
     def _spawn_boss(self):
         """A manager for the boss classes."""

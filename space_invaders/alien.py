@@ -15,22 +15,10 @@ class EnemyRender(Sprite):
         self.image = pygame.image.load(image_path).convert_alpha()
         self.rect = self.image.get_rect()
 
-        # Position handling
-        if position == "topleft":
-            self.rect.topleft = self.screen_rect.topleft
-        elif position == "topright":
-            self.rect.topright = self.screen_rect.topright
-        elif position == "midtop":
-            self.rect.midtop = self.screen_rect.midtop
-        elif position == "midleft":
-            self.rect.midleft = self.screen_rect.midleft
-        elif position == "midright":
-            self.rect.midright = self.screen_rect.midright
-        elif position == "center":
-            self.rect.center = self.screen_rect.center
-        elif position == "random":
+       # Random spawn logic
+        if position == "random":
             # Spawn anywhere across the top row
-            max_x = self.screen_rect.width - self.rect.width # Differnece between screen and alien
+            max_x = self.screen_rect.width - self.rect.width # Difference between screen and alien
             random_x = randint(0, max_x) # randomizer
             self.rect.x = random_x # Sets the x position randomly
             self.rect.y = 0  # Top of screen
@@ -41,10 +29,22 @@ class EnemyRender(Sprite):
         self.screen.blit(self.image, self.rect)
 
 class Alien(EnemyRender):
-    """Base mob type alien."""
+    """Class for managing mod alien types."""
     def __init__(self, si_game):
-        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/alien.png', position='random')
-        self.health = 10
+        """Initialize Mob specific behavior."""
+        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/alien.png', position="random")
+
+    def update(self):
+        """Move the alien left or right."""
+        self.x += self.settings.alien_speed * self.settings.fleet_direction
+        self.rect.x = self.x
+
+    def check_edges(self):
+        """Return True if alien is at screen edge."""
+        screen_rect = self.screen.get_rect()
+        if self.rect.right >= screen_rect.right or self.rect.left <= 0:
+            return True
+        return False
 
 class BossAlien(EnemyRender):
     """Boss alien subtype."""
@@ -62,4 +62,4 @@ class MushroomBoss(EnemyRender):
     """Special boss type alien."""
     def __init__(self, si_game):
         super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/mushroom_boss.png', position='radnom')
-        self.health = 25
+        self.health = 10

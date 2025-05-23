@@ -16,8 +16,17 @@ class Settings:
         self.bullets_allowed = 5 # Max bullets allowed on screen
         self.bullet_damage = 2.5
 
-        # Enemy settings
+        # Mob settings
         self.alien_speed = 1 # Mob speed
+        self.fleet_drop_speed = 10
+        # fleet direction of 1 represents right: -1 represents left
+        self.fleet_direction = 1
+
+        # Mushroom boss settings
         self.mushroom_speed = 1.5 # Second tier enemy speed
+
+        # Antler boss settings
         self.boss_alien_speed = 2 # Boss speed
+
+        # Titan settings
         self.titan_speed = 5 # Titan speed
