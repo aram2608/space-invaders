@@ -28,8 +28,11 @@ class SpaceInvaders:
         # Initialize the character/object instances
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
-        self.alien = Alien(self)
-        self.boss_alien = BossAlien(self)
+
+        # Initialize enemy types
+        self.__create_fleet()
+        self.aliens = pygame.sprite.Group()
+        self.boss_alien = BossAlien(self) #Update these later ---
         self.titan = Titan(self)
         self.mushroom_boss = MushroomBoss(self)
 
@@ -41,7 +44,7 @@ class SpaceInvaders:
         while True:
             self._check_events()
             self.ship.update()
-            self.bullets.update()
+            self._update_bullets()
             self._update_screen()
             # A frame rate of 60 fps
             self.clock.tick(60)
@@ -94,8 +97,20 @@ class SpaceInvaders:
 
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullet group."""
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        """Manages fired bullets."""
+        # Update bullet postions
+        self.bullets.update()
+
+        # Get rid of bullets that have disappeared
+        for bullet in self.bullets.copy():
+             # Kill if it moves off-screen
+            if bullet.rect.bottom <+ 0:
+                bullet.kill()
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
@@ -104,9 +119,15 @@ class SpaceInvaders:
         self.ship.blitme()
         for bullet in self.bullets.sprites():
             bullet.blitme()
-        self.alien.blitme()
+        self.aliens.draw(self.screen)
         self.boss_alien.blitme()
         self.titan.blitme()
         self.mushroom_boss.blitme()
     # Make the most recently drawn screen visible
         pygame.display.flip()
+
+    def __create_fleet(self):
+        """Create fleet of enemeies."""
+        # Make an alien
+        alien = Alien(self)
+        self.aliens.add(alien)

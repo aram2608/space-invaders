@@ -5,11 +5,18 @@ class Settings:
 
     def __init__(self):
         """Initialize the game's settings."""
+        # Base game settings
         self.screen_width = 1200 # In pixels
         self.screen_height = 800 # In pixels
         self.bg_color = (40, 0, 80) # Lower the RBG values for darker colors
+
+        # Ship settings
         self.ship_speed = 1.5 # Base ship speed
         self.bullet_speed = 10 # Base bullet speed
+        self.bullets_allowed = 5 # Max bullets allowed on screen
+        self.bullet_damage = 2.5
+
+        # Enemy settings
         self.alien_speed = 1 # Mob speed
         self.mushroom_speed = 1.5 # Second tier enemy speed
         self.boss_alien_speed = 2 # Boss speed

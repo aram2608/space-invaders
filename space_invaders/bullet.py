@@ -31,11 +31,3 @@ class Bullet(Sprite): # Sprite lets you group related elements together
         # As soon as the bullet spawns it will move which is what we want!
         self.y -= self.settings.bullet_speed
         self.rect.y = self.y
-
-        # Kill if it moves off-screen
-        if self.rect.bottom < 0:
-            self.kill()
-
-        # Kill if it goes off screen
-        if self.rect.bottom < 0:
-            self.kill()
