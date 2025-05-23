@@ -1,4 +1,5 @@
 import sys
+from random import randint
 
 import pygame
 
@@ -30,11 +31,14 @@ class SpaceInvaders:
         self.bullets = pygame.sprite.Group()
 
         # Initialize enemy types
-        self.__create_fleet()
         self.aliens = pygame.sprite.Group()
-        self.boss_alien = BossAlien(self) #Update these later ---
-        self.titan = Titan(self)
-        self.mushroom_boss = MushroomBoss(self)
+        self.boss_alien = pygame.sprite.Group()
+        self.titan = pygame.sprite.Group()
+        self.mushroom_boss = pygame.sprite.Group()
+
+        # Spawn logic
+        self.__create_fleet()
+        self._spawn_boss()
 
         # Set background color, RBG values are used
         self.bg_color = (63, 0, 70) # Lower RBG values for darker colors
@@ -114,20 +118,44 @@ class SpaceInvaders:
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
-    # Redraw the screen during each pass through the loop
+        # Redraw the screen during each pass through the loop
         self.screen.fill(self.settings.bg_color)
+
+        #Character specific items
         self.ship.blitme()
         for bullet in self.bullets.sprites():
             bullet.blitme()
+
+        # Draw in enemy classes
         self.aliens.draw(self.screen)
-        self.boss_alien.blitme()
-        self.titan.blitme()
-        self.mushroom_boss.blitme()
+        self.boss_alien.draw(self.screen)
+        self.mushroom_boss.draw(self.screen)
+        self.titan.draw(self.screen)
+        
     # Make the most recently drawn screen visible
         pygame.display.flip()
 
     def __create_fleet(self):
         """Create fleet of enemeies."""
-        # Make an alien
+        # Add aliens until there is no room left.
+        # Space between aliens is one alien in width
         alien = Alien(self)
-        self.aliens.add(alien)
+        alien_width = alien.rect.width
+        
+        # we get the based width from the first alien
+        current_x = alien_width
+        # takes the screen width and subtracts 2 times the alien width
+        # this calculates the maximum number of aliens that can be spawn in with a space of 1 entire alien
+        while current_x < (self.settings.screen_width - 2 * alien_width):
+            new_alien = Alien(self)
+            new_alien.x = current_x
+            new_alien.rect.x = current_x
+            self.aliens.add(new_alien)
+            current_x += 2 * alien_width
+
+    def _spawn_boss(self):
+        """A manager for the boss classes."""
+        boss_spawn_chance = randint(1,100)
+        titan = Titan(self)
+        mushroom = MushroomBoss(self)
+        boss_alien = BossAlien(self)
