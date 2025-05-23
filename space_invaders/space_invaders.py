@@ -4,6 +4,7 @@ import pygame
 
 from space_invaders.settings import Settings
 from space_invaders.ship import Ship
+from space_invaders.alien import Alien, BossAlien, Titan
 
 class SpaceInvaders:
     """Overall class to manage game assets and behavior."""
@@ -24,6 +25,10 @@ class SpaceInvaders:
         # Initializes a Ship class instance with Space Invaders as the reference
         # I believe this is known as recursion
         self.ship = Ship(self)
+
+        self.alien = Alien(self)
+        self.boss_alien = BossAlien(self)
+        self.titan = Titan(self)
 
         # Set background color, RBG values are used
         self.bg_color = (63, 0, 70) # Lower RBG values for darker colors
@@ -49,5 +54,8 @@ class SpaceInvaders:
     # Redraw the screen during each pass through the loop
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
+        self.alien.blitme()
+        self.boss_alien.blitme()
+        self.titan.blitme()
     # Make the most recently drawn screen visible
         pygame.display.flip()
