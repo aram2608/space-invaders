@@ -1,77 +1,55 @@
 import pygame
+from random import randint
 
-class Alien:
-    """A class to manage aliens."""
-
-    def __init__(self, si_game): # self reference and reference to current instance of SpaceInvaders class
-        """Initialize the alien and set its starting position."""
+class EnemyRender(pygame.sprite.Sprite):
+    """Base class for all enemies."""
+    def __init__(self, si_game, image_path, position="random"):
+        super().__init__()
         self.screen = si_game.screen
-        self.screen_rect = si_game.screen.get_rect()
+        self.screen_rect = self.screen.get_rect()
+        self.settings = si_game.settings
 
-       # Load the ship image and convert for better performance with transparency.
-        image_path = '/Users/ja1473/space-invaders/assets/images/alien.png'
-        self.image = pygame.image.load(image_path).convert_alpha() # converts transparents background
-        self.rect = self.image.get_rect() # pygame treats all objects as rectangles
-
-        # Start each new alien at the mid top of screen
-        self.rect.midtop = self.screen_rect.midtop
-
-    def blitme(self):
-        """Draw the alien at its current location."""
-        self.screen.blit(self.image, self.rect)
-
-class BossAlien:
-    """A class to manage the boss type alien."""
-
-    def __init__(self, si_game): # self reference and reference to current instance of SpaceInvaders class
-        """Initialize the boss alien and set its starting position."""
-        self.screen = si_game.screen
-        self.screen_rect = si_game.screen.get_rect()
-
-       # Load the ship image and convert for better performance with transparency.
-        image_path = '/Users/ja1473/space-invaders/assets/images/boss_alien.png'
-        self.image = pygame.image.load(image_path).convert_alpha() # converts transparents background
-        self.rect = self.image.get_rect() # pygame treats all objects as rectangles
-
-        # Start each new alien at the mid top of screen
-        self.rect.center = self.screen_rect.center
-
-    def blitme(self):
-        """Draw the boss alien at its current location."""
-        self.screen.blit(self.image, self.rect)
-
-class Titan:
-    """A class to manage the titan type alien."""
-
-    def __init__(self, si_game):
-        """Initialize the titan alien and set its starting position."""
-        self.screen = si_game.screen
-        self.screen_rect = si_game.screen.get_rect()
-
-        image_path = '/Users/ja1473/space-invaders/assets/images/titan.png'
+        # Load image
         self.image = pygame.image.load(image_path).convert_alpha()
         self.rect = self.image.get_rect()
 
-        self.rect.midleft = self.screen_rect.midleft
+        # Position handling
+        if position == "topleft":
+            self.rect.topleft = self.screen_rect.topleft
+        elif position == "topright":
+            self.rect.topright = self.screen_rect.topright
+        elif position == "midtop":
+            self.rect.midtop = self.screen_rect.midtop
+        elif position == "midleft":
+            self.rect.midleft = self.screen_rect.midleft
+        elif position == "midright":
+            self.rect.midright = self.screen_rect.midright
+        elif position == "center":
+            self.rect.center = self.screen_rect.center
+        elif position == "random":
+            spawn = randint(1, 3)
+            if spawn == 1:
+                self.rect.topleft = self.screen_rect.topleft
+            elif spawn == 2:
+                self.rect.topright = self.screen_rect.topright
+            else:
+                self.rect.midtop = self.screen_rect.midtop
 
     def blitme(self):
-        """Draw the titan alien at its current location."""
         self.screen.blit(self.image, self.rect)
 
-class MushroomBoss:
-    """A class to manage the mushroom boss special class."""
-
+class Alien(EnemyRender):
     def __init__(self, si_game):
-        """Initialize the mushroom boss."""
-        self.screen = si_game.screen
-        self.screen_rect = si_game.screen.get_rect()
+        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/alien.png', position='random')
 
-        image_path = '/Users/ja1473/space-invaders/assets/images/mushroom_boss.png'
-        self.image = pygame.image.load(image_path).convert_alpha()
-        self.rect = self.image.get_rect()
+class BossAlien(EnemyRender):
+    def __init__(self, si_game):
+        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/boss_alien.png', position='random')
 
-        self.rect.midright = self.screen_rect.midright
+class Titan(EnemyRender):
+    def __init__(self, si_game):
+        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/titan.png', position='random')
 
-    def blitme(self):
-        """Draw mushroom boss to screen."""
-        self.screen.blit(self.image, self.rect)
+class MushroomBoss(EnemyRender):
+    def __init__(self, si_game):
+        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/mushroom_boss.png', position='radnom')

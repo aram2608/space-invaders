@@ -10,3 +10,7 @@ class Settings:
         self.bg_color = (40, 0, 80) # Lower the RBG values for darker colors
         self.ship_speed = 1.5 # Base ship speed
         self.bullet_speed = 10 # Base bullet speed
+        self.alien_speed = 1 # Mob speed
+        self.mushroom_speed = 1.5 # Second tier enemy speed
+        self.boss_alien_speed = 2 # Boss speed
+        self.titan_speed = 5 # Titan speed
