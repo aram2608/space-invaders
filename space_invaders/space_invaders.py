@@ -18,14 +18,16 @@ class SpaceInvaders:
 
         # this makes the screen available to all methods in the class
         self.screen = pygame.display.set_mode(
-            (self.settings.screen_width, self.settings.screen_height)
+            (0,0), pygame.FULLSCREEN
         )
+        self.settings.screen_height = self.screen.get_rect().height
+        self.settings.screen_width = self.screen.get_rect().width
 
         pygame.display.set_caption("Space Invaders")
 
         # Initialize the character/object instances
         self.ship = Ship(self)
-        self.bullet = Bullet(self)
+        self.bullets = pygame.sprite.Group()
         self.alien = Alien(self)
         self.boss_alien = BossAlien(self)
         self.titan = Titan(self)
@@ -39,7 +41,7 @@ class SpaceInvaders:
         while True:
             self._check_events()
             self.ship.update()
-            self.bullet.bullet_movement()
+            self.bullets.update()
             self._update_screen()
             # A frame rate of 60 fps
             self.clock.tick(60)
@@ -71,7 +73,9 @@ class SpaceInvaders:
             # Move ship down
             self.ship.moving_down = True
         elif event.key == pygame.K_SPACE:
-            self.bullet.movement = True
+            self._fire_bullet()
+        elif event.key == pygame.K_q: # Shortcut to quit game 'q'
+            sys.exit()
 
     def _check_keyup_events(self, event):
         """Responds to key releases."""
@@ -88,13 +92,19 @@ class SpaceInvaders:
             # Move ship down
             self.ship.moving_down = False
 
+    def _fire_bullet(self):
+        """Create a new bullet and add it to the bullet group."""
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)
+
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
     # Redraw the screen during each pass through the loop
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.blitme()
         self.alien.blitme()
-        self.bullet.blitme()
         self.boss_alien.blitme()
         self.titan.blitme()
         self.mushroom_boss.blitme()
