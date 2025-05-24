@@ -8,7 +8,8 @@ from space_invaders.settings import Settings
 from space_invaders.ship import Ship
 from space_invaders.bullet import Bullet
 from space_invaders.alien import Alien, BossAlien, Titan, MushroomBoss
-from space_invaders.game_stats import GameStats, GameOver, GameStart
+from space_invaders.game_stats import GameStats
+from space_invaders.titles import GameOver, GameStart
 from space_invaders.buttons import Button
 
 class SpaceInvaders:
@@ -102,7 +103,7 @@ class SpaceInvaders:
         """Start a new game after a game over."""
         self.game_end = False
         self.game_active = True
-        self.stats.ships_left += 3
+        self.stats.reset_stats()
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
