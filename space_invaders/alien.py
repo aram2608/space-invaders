@@ -25,7 +25,7 @@ class EnemyRender(Sprite):
 
 
     def blitme(self):
-        """Draws the enemey to the screen."""
+        """Draws the enemy to the screen."""
         self.screen.blit(self.image, self.rect)
 
 class Alien(EnemyRender):

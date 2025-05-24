@@ -12,6 +12,9 @@ class Settings:
 
         # Ship settings
         self.ship_speed = 1.5 # Base ship speed
+        self.ship_limit = 3 # Number of lives
+
+        # Bullet Settings
         self.bullet_speed = 10 # Base bullet speed
         self.bullets_allowed = 5 # Max bullets allowed on screen
         self.bullet_damage = 2.5

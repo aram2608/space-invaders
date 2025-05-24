@@ -1,5 +1,6 @@
 import sys
 from random import randint
+from time import sleep
 
 import pygame
 
@@ -7,6 +8,8 @@ from space_invaders.settings import Settings
 from space_invaders.ship import Ship
 from space_invaders.bullet import Bullet
 from space_invaders.alien import Alien, BossAlien, Titan, MushroomBoss
+from space_invaders.game_stats import GameStats, GameOver
+from space_invaders.buttons import Button
 
 class SpaceInvaders:
     """Overall class to manage game assets and behavior."""
@@ -23,8 +26,10 @@ class SpaceInvaders:
         )
         self.settings.screen_height = self.screen.get_rect().height
         self.settings.screen_width = self.screen.get_rect().width
-
         pygame.display.set_caption("Space Invaders")
+
+        # Create an instance to store game statisitcs
+        self.stats = GameStats(self)
 
         # Initialize the character/object instances
         self.ship = Ship(self)
@@ -36,20 +41,36 @@ class SpaceInvaders:
         self.titan = pygame.sprite.Group()
         self.mushroom_boss = pygame.sprite.Group()
 
+        # Game over screen
+        self.game_over_text = GameOver(self)
+
         # Spawn logic
-        self.__create_fleet()
+        self._create_fleet()
         self._spawn_boss()
 
         # Set background color, RBG values are used
         self.bg_color = (63, 0, 70) # Lower RBG values for darker colors
 
+        # Start the game in an active state
+        self.game_active = False
+
+        # Game over state
+        self.game_end = False
+
+        # Make the play button
+        self.play_button = Button(self, "Play")
+        self.retry_button = Button(self, "Retry")
+
     def run_game(self):
         """Start the main loop for the game."""
         while True:
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_mobs()
+
+            # Components that should only be active while game is active.
+            if self.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_mobs()
 
             # Redraw screen
             self._update_screen()
@@ -67,6 +88,48 @@ class SpaceInvaders:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+    
+    def _check_play_button(self, mouse_pos):
+        """Start a new game when the player clicks play."""
+        if self.play_button.rect.collidepoint(mouse_pos):
+            self.game_active = True
+
+    def _check_retry(self):
+        """Start a new game after a game over."""
+        self.game_end = False
+        self.game_active = True
+        self.stats.ships_left += 3
+
+    def _update_screen(self):
+        """Update images on the screen, and flip to the new screen."""
+
+        # Clear background
+        self.screen.fill(self.settings.bg_color)
+
+        if self.game_end:
+            self.game_over_text.blitme()
+            self.retry_button.draw_button()
+
+        elif not self.game_active:
+            # Game is idle
+            self.play_button.draw_button()
+
+        else:
+            # Active game running
+            self.ship.blitme()
+            for bullet in self.bullets.sprites():
+                bullet.blitme()
+
+            self.aliens.draw(self.screen)
+            self.boss_alien.draw(self.screen)
+            self.mushroom_boss.draw(self.screen)
+            self.titan.draw(self.screen)
+
+        # Flip everything to the screen
+        pygame.display.flip()
 
     def _check_keydown_events(self, event):
         """Responds to keypresses."""
@@ -84,6 +147,8 @@ class SpaceInvaders:
             self.ship.moving_down = True
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
+        elif event.key == pygame.K_r and self.stats.ships_left == 0:
+            self._check_retry()
         elif event.key == pygame.K_q: # Shortcut to quit game 'q'
             sys.exit()
 
@@ -132,28 +197,28 @@ class SpaceInvaders:
         if not self.aliens: # Check to see if alien group is empty
             #Destroy existing bullets and create a new fleet.
             self.bullets.empty()
-            self.__create_fleet()
+            self._create_fleet()
 
-    def _update_screen(self):
-        """Update images on the screen, and flip to the new screen."""
-        # Redraw the screen during each pass through the loop
-        self.screen.fill(self.settings.bg_color)
+    def _ship_hit(self):
+        """Respond to ship being hit by an alien."""
+        if self.stats.ships_left > 0:
+            # Decrease the number of ships left.
+            self.stats.ships_left -= 1
 
-        #Character specific items
-        self.ship.blitme()
-        for bullet in self.bullets.sprites():
-            bullet.blitme()
+            # Get rid of any remaining bullets and allines
+            self.bullets.empty()
+            self.aliens.empty()
 
-        # Draw in enemy classes
-        self.aliens.draw(self.screen)
-        self.boss_alien.draw(self.screen)
-        self.mushroom_boss.draw(self.screen)
-        self.titan.draw(self.screen)
-        
-    # Make the most recently drawn screen visible
-        pygame.display.flip()
+            # Create a new fleet and center the ship
+            self._create_fleet()
+            self.ship.center_ship()
 
-    def __create_fleet(self):
+            # Pause
+            sleep(0.5)
+        else:
+            self.game_end = True
+
+    def _create_fleet(self):
         """Create fleet of enemeies."""
         # Add aliens until there is no room left.
         # Space between aliens is one alien in width
@@ -185,6 +250,21 @@ class SpaceInvaders:
         """Update mob alien position."""
         self._check_fleet_edges()
         self.aliens.update()
+
+        # Detect alien-ship collisions
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self._ship_hit()
+
+        # Look for aliens hitting bottom of the screen.
+        self._check_aliens_bottom()
+
+    def _check_aliens_bottom(self):
+        """Check if any aliens have reached the bottom of the screen."""
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                # Treat this as if the ship got hit.
+                self._ship_hit()
+                break # No reason to check every alien, just the first that reaches bottom
 
     def _check_fleet_edges(self):
         """Respond appropriately if any aliens have reached an edge."""
