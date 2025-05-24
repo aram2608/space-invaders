@@ -59,7 +59,7 @@ class SpaceInvaders:
 
         # Make the play button
         self.play_button = Button(self, "Play")
-        self.retry_button = Button(self, "Retry")
+        self.retry_button = Button(self, "R to try again")
 
     def run_game(self):
         """Start the main loop for the game."""
