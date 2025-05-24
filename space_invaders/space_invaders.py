@@ -8,7 +8,7 @@ from space_invaders.settings import Settings
 from space_invaders.ship import Ship
 from space_invaders.bullet import Bullet
 from space_invaders.alien import Alien, BossAlien, Titan, MushroomBoss
-from space_invaders.game_stats import GameStats, GameOver
+from space_invaders.game_stats import GameStats, GameOver, GameStart
 from space_invaders.buttons import Button
 
 class SpaceInvaders:
@@ -41,7 +41,8 @@ class SpaceInvaders:
         self.titan = pygame.sprite.Group()
         self.mushroom_boss = pygame.sprite.Group()
 
-        # Game over screen
+        # Game State screen
+        self.game_start_text = GameStart(self)
         self.game_over_text = GameOver(self)
 
         # Spawn logic
@@ -116,6 +117,7 @@ class SpaceInvaders:
         elif not self.game_active:
             # Game is idle
             self.play_button.draw_button()
+            self.game_start_text.blitme()
 
         else:
             # Active game running

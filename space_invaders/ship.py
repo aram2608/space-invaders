@@ -16,9 +16,9 @@ class Ship:
         self.image = pygame.image.load(image_path).convert_alpha() # converts transparents background
         self.rect = self.image.get_rect() # pygame treats all objects as rectangles
 
-        # Start each new ship at the bottom cetner of the screen.
+        # Start each new ship at the bottom center of the screen.
         self.rect.midbottom = self.screen_rect.midbottom
-
+#
         # Store a float for the ships exact horizontal position.
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)

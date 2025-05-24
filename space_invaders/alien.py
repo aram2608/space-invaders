@@ -32,7 +32,7 @@ class Alien(EnemyRender):
     """Class for managing mod alien types."""
     def __init__(self, si_game):
         """Initialize Mob specific behavior."""
-        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/alien.png', position="random")
+        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/alien.png', position="None")
 
     def update(self):
         """Move the alien left or right."""
@@ -61,5 +61,5 @@ class Titan(EnemyRender):
 class MushroomBoss(EnemyRender):
     """Special boss type alien."""
     def __init__(self, si_game):
-        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/mushroom_boss.png', position='radnom')
+        super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/mushroom_boss.png', position='random')
         self.health = 10
