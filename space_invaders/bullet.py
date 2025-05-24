@@ -11,7 +11,8 @@ class Bullet(Sprite): # Sprite lets you group related elements together
         self.settings = si_game.settings
 
         #Load projectile
-        image_path = '/Users/ja1473/space-invaders/assets/images/ship_projectile.png'
+        image_path = '/Users/ja1473/space-invaders/assets/images/test_bullet.png'
+        #image_path = '/Users/ja1473/space-invaders/assets/images/ship_projectile.png'
         self.image = pygame.image.load(image_path).convert_alpha()
         self.rect = self.image.get_rect()
 

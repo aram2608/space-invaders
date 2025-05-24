@@ -50,7 +50,6 @@ class SpaceInvaders:
             self.ship.update()
             self._update_bullets()
             self._update_mobs()
-            self._check_fleet_edges()
 
             # Redraw screen
             self._update_screen()
@@ -120,6 +119,21 @@ class SpaceInvaders:
             if bullet.rect.bottom <+ 0:
                 bullet.kill()
 
+        self._check_bullet_alien_collisions()
+
+    def _check_bullet_alien_collisions(self):
+        """Respond to bullets and aliens that have collided."""
+        # Remove bullets and aliens that have collieded.
+        collisions = pygame.sprite.groupcollide( # groupcollide() compares two groups rects and sees if they hit each other
+            self.bullets, self.aliens, False, True # it then stores the two objects in a dictionary.
+        ) # The two true arguments tell pygame to remove the objects that are hit.
+
+        # Logic for spawning more mobs
+        if not self.aliens: # Check to see if alien group is empty
+            #Destroy existing bullets and create a new fleet.
+            self.bullets.empty()
+            self.__create_fleet()
+
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         # Redraw the screen during each pass through the loop
@@ -168,7 +182,8 @@ class SpaceInvaders:
         self.aliens.add(new_alien)
 
     def _update_mobs(self):
-        """Update mob alien position"""
+        """Update mob alien position."""
+        self._check_fleet_edges()
         self.aliens.update()
 
     def _check_fleet_edges(self):
