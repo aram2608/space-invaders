@@ -17,7 +17,7 @@ For two, I am planning on adding special alien classes that will act as boss fig
 
 ---
 
-<img src="assets/images/alien.png" alt="Alien" width="200"/>
+![Mob](assets/images/alien.png)
 
 ---
 
