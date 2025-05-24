@@ -17,7 +17,7 @@ For two, I am planning on adding special alien classes that will act as boss fig
 
 ---
 
-![Mob](assets/images/alien.png)
+<img src="assets/images/alien.png" alt="Alien" width="200"/>
 
 ---
 
@@ -37,7 +37,7 @@ For two, I am planning on adding special alien classes that will act as boss fig
 
 ---
 
-#### And finally the special boss (Titatn) is this guy...
+#### And finally the special boss (Titan) is this guy...
 
 ---
 
