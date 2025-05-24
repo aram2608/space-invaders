@@ -11,17 +11,47 @@ For one, the sprites were all made by me in Inkscape with some inspiration I fou
 
 For two, I am planning on adding special alien classes that will act as boss fights throughout the game.
 
-The base alien (Mob) is this guy...
+# The Characters
+
+#### The base alien (Mob) is this guy...
+
+---
+
 ![Mob](assets/images/alien.png)
 
-The mid tier alien (Mushlord) is this guy...
+---
+
+#### The mid tier alien (Mushlord) is this guy...
+
+---
+
 ![Mushlord](assets/images/mushroom_boss.png)
 
-The boss alien (AntlerBoss) is this guy...
+---
+
+#### The boss alien (AntlerBoss) is this guy...
+
+---
+
 ![AntlerBoss](assets/images/boss_alien.png)
 
-And finally the special boss is this guy...
+---
+
+#### And finally the special boss (Titatn) is this guy...
+
+---
+
 ![Titan](assets/images/titan.png)
+
+---
+
+#### Last but not least...
+
+![Ship](assets/images/ship.png)
+
+#### The ship!
+
+---
 
 # Progress so Far
 
