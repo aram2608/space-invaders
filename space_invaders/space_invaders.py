@@ -113,6 +113,7 @@ class SpaceInvaders:
         self.stats.reset_stats()
         self.settings.initialize_dynamic_settings()
         self.sb.prep_score()
+        self.sb.prep_lives()
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
@@ -203,7 +204,7 @@ class SpaceInvaders:
         """Respond to bullets and aliens that have collided."""
         # Remove bullets and aliens that have collieded.
         collisions = pygame.sprite.groupcollide( # groupcollide() compares two groups rects and sees if they hit each other
-            self.bullets, self.aliens, False, True # it then stores the two objects in a dictionary.
+            self.bullets, self.aliens, True, True # it then stores the two objects in a dictionary.
         ) # The two true arguments tell pygame to remove the objects that are hit.
 
         if collisions:
@@ -227,7 +228,8 @@ class SpaceInvaders:
 
     def _ship_hit(self):
         """Respond to ship being hit by an alien."""
-        if self.stats.ships_left > 0:
+        if self.stats.ships_left >= 1:
+            print(f"{self.stats.ships_left}")
             # Decrease the number of ships left.
             self.stats.ships_left -= 1
             self.sb.prep_lives()
