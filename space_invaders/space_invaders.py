@@ -229,7 +229,6 @@ class SpaceInvaders:
     def _ship_hit(self):
         """Respond to ship being hit by an alien."""
         if self.stats.ships_left >= 1:
-            print(f"{self.stats.ships_left}")
             # Decrease the number of ships left.
             self.stats.ships_left -= 1
             self.sb.prep_lives()
