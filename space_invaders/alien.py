@@ -52,6 +52,18 @@ class BossAlien(EnemyRender):
         super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/boss_alien.png', position='random')
         self.health = 25
 
+    def boss_movement(self):
+        """Antler boss monster movement."""
+        self.y += self.settings.boss_alien_speed
+        self.rect.y = self.y
+
+    def check_edges(self):
+        """Return True if alien is at screen edge."""
+        screen_rect = self.screen.get_rect()
+        if self.rect.right >= screen_rect.right or self.rect.left <= 0:
+            return True
+        return False
+
 class Titan(EnemyRender):
     """Titan class alien, most difficult boss in the game."""
     def __init__(self, si_game):

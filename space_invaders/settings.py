@@ -11,19 +11,14 @@ class Settings:
         self.bg_color = (40, 0, 80) # Lower the RBG values for darker colors
 
         # Ship settings
-        self.ship_speed = 1.5 # Base ship speed
         self.ship_limit = 3 # Number of lives
 
         # Bullet Settings
-        self.bullet_speed = 10 # Base bullet speed
         self.bullets_allowed = 5 # Max bullets allowed on screen
-        self.bullet_damage = 2.5
 
         # Mob settings
-        self.alien_speed = 1 # Mob speed
         self.fleet_drop_speed = 10
-        # fleet direction of 1 represents right: -1 represents left
-        self.fleet_direction = 1
+        self.alien_kills = 0
 
         # Mushroom boss settings
         self.mushroom_speed = 1.5 # Second tier enemy speed
@@ -33,3 +28,26 @@ class Settings:
 
         # Titan settings
         self.titan_speed = 5 # Titan speed
+
+        # Game speed up
+        self.speedup_scale = 1.1 # How quickly the game speeds up
+        self.score_scale = 1.5 # How quickly point values increase
+        self.initialize_dynamic_settings()
+
+    def initialize_dynamic_settings(self):
+        """Settings that can change throughout the game."""
+        self.ship_speed = 1.5
+        self.bullet_speed = 2.5
+        self.alien_speed = 1.0
+        self.mob_points = 50
+
+        # Fleet direction of 1 represents right: -1 represents left
+        self.fleet_direction = 1
+
+    def increase_speed(self):
+        """Increase speed settings."""
+        self.ship_speed *= self.speedup_scale
+        self.bullet_speed *= self.speedup_scale
+        self.alien_speed *= self.speedup_scale
+
+        self.mob_points = int(self.mob_points * self.score_scale)

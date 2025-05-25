@@ -1,5 +1,6 @@
 import sys
 from random import randint
+import random
 from time import sleep
 
 import pygame
@@ -11,6 +12,7 @@ from space_invaders.alien import Alien, BossAlien, Titan, MushroomBoss
 from space_invaders.game_stats import GameStats
 from space_invaders.titles import GameOver, GameStart
 from space_invaders.buttons import Button
+from space_invaders.scoreboard import Scoreboard
 
 class SpaceInvaders:
     """Overall class to manage game assets and behavior."""
@@ -31,6 +33,7 @@ class SpaceInvaders:
 
         # Create an instance to store game statisitcs
         self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
 
         # Initialize the character/object instances
         self.ship = Ship(self)
@@ -38,17 +41,17 @@ class SpaceInvaders:
 
         # Initialize enemy types
         self.aliens = pygame.sprite.Group()
-        self.boss_alien = pygame.sprite.Group()
-        self.titan = pygame.sprite.Group()
-        self.mushroom_boss = pygame.sprite.Group()
+        self.boss_group = pygame.sprite.Group()
 
         # Game State screen
         self.game_start_text = GameStart(self)
         self.game_over_text = GameOver(self)
 
+        # Boss fights
+        self.boss_fight = False
+        
         # Spawn logic
         self._create_fleet()
-        self._spawn_boss()
 
         # Set background color, RBG values are used
         self.bg_color = (63, 0, 70) # Lower RBG values for darker colors
@@ -96,14 +99,20 @@ class SpaceInvaders:
     
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks play."""
-        if self.play_button.rect.collidepoint(mouse_pos):
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.game_active:
+            self.settings.initialize_dynamic_settings()
             self.game_active = True
+            self.sb.prep_lives()
+            pygame.mouse.set_visible(False)
 
     def _check_retry(self):
         """Start a new game after a game over."""
         self.game_end = False
         self.game_active = True
         self.stats.reset_stats()
+        self.settings.initialize_dynamic_settings()
+        self.sb.prep_score()
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
@@ -122,14 +131,15 @@ class SpaceInvaders:
 
         else:
             # Active game running
+            self.sb.show_score()
             self.ship.blitme()
             for bullet in self.bullets.sprites():
                 bullet.blitme()
 
-            self.aliens.draw(self.screen)
-            self.boss_alien.draw(self.screen)
-            self.mushroom_boss.draw(self.screen)
-            self.titan.draw(self.screen)
+            if self.boss_fight:
+                self.boss_group.draw(self.screen)
+            else:
+                self.aliens.draw(self.screen)
 
         # Flip everything to the screen
         pygame.display.flip()
@@ -184,7 +194,7 @@ class SpaceInvaders:
         # Get rid of bullets that have disappeared
         for bullet in self.bullets.copy():
              # Kill if it moves off-screen
-            if bullet.rect.bottom <+ 0:
+            if bullet.rect.bottom <= 0:
                 bullet.kill()
 
         self._check_bullet_alien_collisions()
@@ -196,19 +206,33 @@ class SpaceInvaders:
             self.bullets, self.aliens, False, True # it then stores the two objects in a dictionary.
         ) # The two true arguments tell pygame to remove the objects that are hit.
 
+        if collisions:
+            for aliens_hit in collisions.values():
+                # Logic for the kill counter
+                self.stats.alien_kills += len(aliens_hit)
+                # Logic for points counter
+                self.stats.score += self.settings.mob_points * len(aliens_hit)
+            self.sb.prep_score()
+            self.sb.prep_high_score()
+
+        # Span boss after certain number of collisions
+        self._boss_trigger()
+
         # Logic for spawning more mobs
         if not self.aliens: # Check to see if alien group is empty
             #Destroy existing bullets and create a new fleet.
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
     def _ship_hit(self):
         """Respond to ship being hit by an alien."""
         if self.stats.ships_left > 0:
             # Decrease the number of ships left.
             self.stats.ships_left -= 1
+            self.sb.prep_lives()
 
-            # Get rid of any remaining bullets and allines
+            # Get rid of any remaining bullets and aliens
             self.bullets.empty()
             self.aliens.empty()
 
@@ -225,21 +249,20 @@ class SpaceInvaders:
         """Create fleet of enemeies."""
         # Add aliens until there is no room left.
         # Space between aliens is one alien in width
-        alien = Alien(self)
-        alien_width, alien_height = alien.rect.size # Tuple containing width and height
+        if self.boss_fight == False:
+            alien = Alien(self)
+            alien_width, alien_height = alien.rect.size # Tuple containing width and height
         
-        # We get the base dimensions
-        current_x, current_y = alien_width, alien_height
+            current_x, current_y = alien_width, alien_height
+            
+            while current_y < (self.settings.screen_height - 6 * alien_height):
+                while current_x < (self.settings.screen_width - 2 * alien_width):
+                    self._create_alien(current_x, current_y)
+                    current_x += 2 * alien_width
 
-        # Spawn logic
-        while current_y < (self.settings.screen_height - 3 * alien_height):
-            while current_x < (self.settings.screen_width - 2 * alien_width):
-                self._create_alien(current_x, current_y)
-                current_x += 2 * alien_width
-
-            # Finished a row, reset x value and increment y value
-            current_x = alien_width
-            current_y += 2 * alien_height
+                # Finished a row
+                current_x = alien_width
+                current_y += 2 * alien_height
 
     def _create_alien(self, x_position, y_position):
         """Method to spawn aliens."""
@@ -284,7 +307,16 @@ class SpaceInvaders:
 
     def _spawn_boss(self):
         """A manager for the boss classes."""
-        boss_spawn_chance = randint(1,100)
-        titan = Titan(self)
-        mushroom = MushroomBoss(self)
-        boss_alien = BossAlien(self)
+        boss_type = randint(1, 3)
+        if boss_type == 1:
+            self.boss_group.add(MushroomBoss(self))
+        elif boss_type == 2:
+            self.boss_group.add(BossAlien(self))
+        elif boss_type == 3:
+            self.boss_group.add(Titan(self))
+
+    def _boss_trigger(self):
+        """Manages when bosses are spawned."""
+        if self.stats.alien_kills >= 1000 and not self.boss_fight:
+            self._spawn_boss()
+            self.boss_fight = True
