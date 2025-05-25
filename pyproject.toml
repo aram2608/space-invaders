@@ -7,3 +7,6 @@ requires-python = ">=3.13"
 dependencies = [
     "pygame",
 ]
+
+[tool.poetry.scripts]
+space-invaders = "space_invaders.__main__:main"
