@@ -22,12 +22,15 @@ class Settings:
 
         # Mushroom boss settings
         self.mushroom_speed = 1.5 # Second tier enemy speed
+        self.mushroom_health = 5
 
         # Antler boss settings
         self.boss_alien_speed = 2 # Boss speed
+        self.boss_alien_health = 10
 
         # Titan settings
         self.titan_speed = 5 # Titan speed
+        self.titan_health = 25
 
         # Game speed up
         self.speedup_scale = 1.1 # How quickly the game speeds up

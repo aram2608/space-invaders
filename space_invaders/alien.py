@@ -50,7 +50,6 @@ class BossAlien(EnemyRender):
     """Boss alien subtype."""
     def __init__(self, si_game):
         super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/boss_alien.png', position='random')
-        self.health = 25
 
     def boss_movement(self):
         """Antler boss monster movement."""
@@ -68,10 +67,8 @@ class Titan(EnemyRender):
     """Titan class alien, most difficult boss in the game."""
     def __init__(self, si_game):
         super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/titan.png', position='random')
-        self.health = 100
 
 class MushroomBoss(EnemyRender):
     """Special boss type alien."""
     def __init__(self, si_game):
         super().__init__(si_game, '/Users/ja1473/space-invaders/assets/images/mushroom_boss.png', position='random')
-        self.health = 10

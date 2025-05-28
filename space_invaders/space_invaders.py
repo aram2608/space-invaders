@@ -14,6 +14,9 @@ from space_invaders.titles import GameOver, GameStart
 from space_invaders.buttons import Button
 from space_invaders.scoreboard import Scoreboard
 
+#TODO
+# Need to finish the logic for the boss fights and make the game more fun since its a bit slow rn
+
 class SpaceInvaders:
     """Overall class to manage game assets and behavior."""
 
@@ -196,6 +199,7 @@ class SpaceInvaders:
                 bullet.kill()
 
         self._check_bullet_alien_collisions()
+        self._check_boss_bullet_collisions()
 
     def _check_bullet_alien_collisions(self):
         """Respond to bullets and aliens that have collided."""
@@ -315,6 +319,21 @@ class SpaceInvaders:
 
     def _boss_trigger(self):
         """Manages when bosses are spawned."""
-        if self.stats.alien_kills >= 1000 and not self.boss_fight:
+        if self.stats.alien_kills >= 3 and not self.boss_fight:
             self._spawn_boss()
             self.boss_fight = True
+
+    def _check_boss_bullet_collisions(self):
+        """Manages the boss' health and damage taken."""
+        boss_collisions = pygame.sprite.groupcollide( # groupcollide() compares two groups rects and sees if they hit each other
+            self.bullets, self.boss_group, True, False # it then stores the two objects in a dictionary.
+        ) # The two true arguments tell pygame to remove the objects that are hit.
+
+        if boss_collisions:
+            for boss_hit in boss_collisions.values():
+                # Logic for the damage counter
+                self.settings.boss_alien_health -= len(boss_hit)
+                # Logic for points counter
+                if self.settings.boss_alien_health == 0:
+                    for boss in self.boss_group.copy():
+                        boss.kill()
