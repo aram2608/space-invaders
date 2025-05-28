@@ -68,5 +68,5 @@ class Scoreboard:
         for life_number in range(self.stats.ships_left):
             life = Lives(self.si_game)
             life.rect.x = 10 + life_number * life.rect.width
-            life.rect.y = 875
+            life.rect.y = 920
             self.lives.add(life)

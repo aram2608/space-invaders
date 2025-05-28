@@ -53,9 +53,6 @@ class SpaceInvaders:
         # Spawn logic
         self._create_fleet()
 
-        # Set background color, RBG values are used
-        self.bg_color = (63, 0, 70) # Lower RBG values for darker colors
-
         # Start the game in an active state
         self.game_active = False
 
