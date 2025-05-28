@@ -197,9 +197,12 @@ class SpaceInvaders:
              # Kill if it moves off-screen
             if bullet.rect.bottom <= 0:
                 bullet.kill()
-
-        self._check_bullet_alien_collisions()
-        self._check_boss_bullet_collisions()
+        
+        # Normal vs boss logic
+        if not self.boss_fight:
+            self._check_bullet_alien_collisions()
+        else:
+            self._check_boss_bullet_collisions()
 
     def _check_bullet_alien_collisions(self):
         """Respond to bullets and aliens that have collided."""
@@ -319,7 +322,10 @@ class SpaceInvaders:
 
     def _boss_trigger(self):
         """Manages when bosses are spawned."""
-        if self.stats.alien_kills >= 3 and not self.boss_fight:
+        if self.stats.alien_kills == 3 and not self.boss_fight:
+            self._spawn_boss()
+            self.boss_fight = True
+        elif self.stats.alien_kills == 15 and not self.boss_fight:
             self._spawn_boss()
             self.boss_fight = True
 
@@ -337,3 +343,4 @@ class SpaceInvaders:
                 if self.settings.boss_alien_health == 0:
                     for boss in self.boss_group.copy():
                         boss.kill()
+                    self.boss_fight = False
